@@ -1,50 +1,78 @@
-import React, { useCallback, useRef, useState } from 'react'
+import React, {
+  useCallback,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import PropTypes from 'prop-types'
 
-// import { childrenType } from '@innodoc/client-misc/src/propTypes'
-
+import MathJaxConfigContext from './MathJaxConfigContext'
 import MathJaxContext from './MathJaxContext'
-import typesetStates from './states'
 import useInitMathJax from './useInitMathJax'
 
-const DEFAULT_MATHJAX_FONT_URL = process.browser
-  ? `${window.location.origin}/fonts/mathjax-woff-v2`
-  : ''
+const typesettingDone = (setTypesetStatus, typesetCallbacks) => {
+  // Add chtml styles.
+  const chtmlStylesheet = window.MathJax.chtmlStylesheet()
+  const existingChtmlStylesheet = document.getElementById(chtmlStylesheet.id)
+  if (existingChtmlStylesheet) {
+    existingChtmlStylesheet.parentNode.replaceChild(
+      chtmlStylesheet,
+      existingChtmlStylesheet
+    )
+  } else {
+    document.getElementsByTagName('head')[0].appendChild(chtmlStylesheet)
+  }
+  // Run callbacks.
+  setTypesetStatus(true)
+  while (typesetCallbacks.current.length > 0) {
+    typesetCallbacks.current.pop()()
+  }
+}
 
-const MathJaxProvider = ({ children, options }) => {
-  const typesetTimer = useRef(false)
+const MathJaxProvider = ({ children }) => {
+  const options = useContext(MathJaxConfigContext)
+  // Using a chain of promises to orchestrate the flow of events.
+  const promiseMakers = useRef([])
+  // MathJax typesetting state. Can be used to show contents after typeset is done.
+  const [typesetDone, setTypesetDone] = useState(false)
+  // List of callbacks after *all* sub-tree MathJax elements have been typeset.
   const typesetCallbacks = useRef([])
-  const [typesetStatus, setTypesetStatus] = useState(typesetStates.INITIAL)
   const addCallback = useCallback((cb) => typesetCallbacks.current.push(cb), [])
   const removeCallback = useCallback(
-    (cb) => typesetCallbacks.current.splice(typesetCallbacks.current.indexOf(cb), 1), [])
+    (cb) =>
+      typesetCallbacks.current.splice(typesetCallbacks.current.indexOf(cb), 1),
+    []
+  )
+
+  // Load MathJax
+  const initPromise = useInitMathJax(options)
+
+  // Typeset formulars sequentially.
+  useEffect(() => {
+    if (process.browser) {
+      promiseMakers.current
+        .reduce((chain, makePromise) => chain.then(makePromise), initPromise)
+        .then(() => typesettingDone(setTypesetDone, typesetCallbacks))
+    }
+  }, [initPromise, setTypesetDone, typesetCallbacks])
+
   const value = {
     addCallback,
     removeCallback,
-    setTypesetStatus,
+    setTypesetDone,
     typesetCallbacks,
-    typesetStatus,
-    typesetTimer,
+    typesetDone,
+    promiseMakers,
   }
 
-  useInitMathJax({
-    ...options,
-    chtml: {
-      fontURL: DEFAULT_MATHJAX_FONT_URL, // set default font URL
-      ...options.chtml || {},
-    },
-  })
-
   return (
-    <MathJaxContext.Provider value={value}>
-      {children}
-    </MathJaxContext.Provider>
+    <MathJaxContext.Provider value={value}>{children}</MathJaxContext.Provider>
   )
 }
 
 MathJaxProvider.propTypes = {
-  children: PropTypes.any.isRequired,
-  options: PropTypes.object.isRequired,
+  children: PropTypes.node.isRequired,
 }
 
 export default MathJaxProvider

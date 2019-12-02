@@ -1,48 +1,70 @@
 import { insert } from 'mathjax-full/js/util/Options'
 
-import addToQueue from './addToQueue'
-
 // if MathJax import has been triggered
 let mathJaxImported = false
+// if MathJax is ready
+let mathJaxReady = false
 
-const getDefaultOptions = () => ({
+const DEFAULT_FONT_URL =
+  'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2'
+
+const pageReadyCallbacks = []
+
+const defaultOptions = {
   chtml: {
-    fontURL: 'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2',
+    fontURL: DEFAULT_FONT_URL,
   },
   startup: {
     typeset: false,
+    pageReady: () => {
+      mathJaxReady = true
+      while (pageReadyCallbacks.length > 0) {
+        pageReadyCallbacks.pop()()
+      }
+    },
   },
   tex: {
     packages: { '[+]': ['ams'] },
   },
-})
+}
+
+// TODO: create (optional) MathJaxOptionsContext (only one options for all MathJaxContexts!)
 
 const useInitMathJax = (options) => {
   if (process.browser) {
-    if (!mathJaxImported) {
-      mathJaxImported = true
-      addToQueue(
-        () => new Promise((resolve) => {
-          // MathJax reads options from window.MathJax
-          window.MathJax = insert(getDefaultOptions(), options)
-          // support a custom pageReady function
-          if (window.MathJax.startup.pageReady) {
-            const customPageReady = window.MathJax.startup.pageReady
-            window.MathJax.startup.pageReady = () => {
-              resolve()
-              customPageReady()
-            }
-          } else {
-            window.MathJax.startup.pageReady = resolve
+    const customOptions = options
+    return new Promise((resolve) => {
+      if (mathJaxImported) {
+        if (mathJaxReady) {
+          resolve()
+        } else {
+          pageReadyCallbacks.push(resolve)
+        }
+      } else {
+        mathJaxImported = true
+        // support a custom pageReady function
+        let readyCallback
+        if (customOptions.startup && customOptions.startup.pageReady) {
+          const customReadyCallback = customOptions.startup.pageReady
+          delete customOptions.startup.pageReady
+          readyCallback = () => {
+            resolve()
+            customReadyCallback()
           }
-          import(
-            /* webpackChunkName: "mathjax" */
-            './mathjax-bundle'
-          )
-        })
-      )
-    }
+        } else {
+          readyCallback = resolve
+        }
+        // MathJax reads options from window.MathJax
+        window.MathJax = insert(defaultOptions, customOptions)
+        pageReadyCallbacks.push(readyCallback)
+        import(
+          /* webpackChunkName: "mathjax" */
+          './mathjax-bundle'
+        )
+      }
+    })
   }
+  return undefined // no-op on server
 }
 
 export default useInitMathJax

@@ -1,50 +1,73 @@
 {
-  "name": "use-mathjax",
+  "name": "@innodoc/react-mathjax-node",
   "version": "0.0.1",
   "description": "React hook for integrating MathJax v3",
-  "source": "src/index.js",
-  "main": "dist/use-mathjax.js",
-  "umd:main": "dist/use-mathjax.umd.js",
-  "module": "dist/use-mathjax.mjs",
+  "main": "cjs/",
+  "module": "esm/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/innodoc/use-mathjax.git"
+    "url": "https://gitlab.tu-berlin.de/innodoc/react-mathjax-node"
   },
   "bugs": {
-    "url": "https://github.com/innodoc/use-mathjax/issues"
+    "url": "https://github.com/innodoc/react-mathjax-node/issues"
   },
   "author": "Mirko Dietrich <dietrich@math.tu-berlin.de>",
   "license": "MIT",
+  "private": false,
+  "files": [
+    "/cjs",
+    "/esm",
+    "/src"
+  ],
   "keywords": [
     "react",
     "react-hooks",
     "mathjax"
   ],
+  "browserslist": [
+    ">1%",
+    "last 1 version",
+    "Firefox ESR",
+    "not dead"
+  ],
   "scripts": {
-    "build": "rollup -c",
+    "build:cjs": "babel --delete-dir-on-start --source-maps --out-dir cjs --env-name cjs src",
+    "build:esm": "babel --delete-dir-on-start --source-maps --out-dir esm src",
+    "build": "yarn build:cjs && yarn build:esm",
+    "coverage": "jest --coverage --silent",
+    "format": "prettier --write \"*.js\" \"{src,test}/**/*.js\"",
     "lint": "eslint .",
     "test": "jest"
   },
-  "private": false,
+  "dependencies": {
+    "mathjax-full": "^3.0.0",
+    "prop-types": "^15.7.2"
+  },
   "devDependencies": {
+    "@babel/cli": "^7.7.4",
     "@babel/core": "^7.7.4",
-    "@babel/plugin-syntax-dynamic-import": "^7.7.4",
     "@babel/preset-env": "^7.7.4",
     "@babel/preset-react": "^7.7.4",
     "babel-eslint": "^10.0.3",
     "babel-jest": "^24.9.0",
+    "cross-env": "^6.0.3",
+    "enzyme": "^3.10.0",
+    "enzyme-adapter-react-16": "^1.15.1",
     "eslint": "^6.7.1",
     "eslint-config-airbnb": "^18.0.1",
+    "eslint-config-prettier": "^6.7.0",
     "eslint-plugin-import": "^2.18.2",
     "eslint-plugin-jest": "^23.0.5",
     "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-prettier": "^3.1.1",
     "eslint-plugin-react": "^7.16.0",
+    "eslint-plugin-react-hooks": "^2.3.0",
     "jest": "^24.9.0",
-    "mathjax-full": "^3.0.0",
-    "prop-types": "^15.7.2",
+    "jest-environment-enzyme": "^7.1.2",
+    "jest-enzyme": "^7.1.2",
+    "prettier": "^1.19.1",
     "react": "^16.12.0",
-    "rollup": "^1.27.5",
-    "rollup-plugin-babel": "^4.3.3"
+    "react-dom": "^16.12.0"
   },
   "peerDependencies": {
     "react": "^16.12.0"

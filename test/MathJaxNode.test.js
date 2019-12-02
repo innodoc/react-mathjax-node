@@ -15,7 +15,8 @@ jest.mock('../../../../../hooks/useMathJax', () => ({
     mathJaxElem: mockMathJaxElem,
     typesetState: mockTypesetState,
   }),
-  typesetStates: jest.requireActual('../../../../../hooks/useMathJax').typesetStates,
+  typesetStates: jest.requireActual('../../../../../hooks/useMathJax')
+    .typesetStates,
 }))
 
 describe('<MathJax />', () => {

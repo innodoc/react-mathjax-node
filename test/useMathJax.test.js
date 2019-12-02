@@ -17,24 +17,22 @@ const mockQueueImpl = (arr, jax) => {
 let mockQueue
 let mockMathJaxStartupHooks
 let mockSkipLoadScript
-jest.mock('load-script', () => (
-  () => {
-    if (!mockSkipLoadScript) {
-      const scriptEl = mockDocument.createElement('script')
-      scriptEl.setAttribute('id', '__MATHJAX_SCRIPT__')
-      mockDocument.body.appendChild(scriptEl)
-      mockWindow.MathJax.Ajax = { config: { path: {} } }
-      mockWindow.MathJax.Hub = {
-        getAllJax: () => mockAllJax,
-        Register: { StartupHook: (_, cb) => mockMathJaxStartupHooks.push(cb) },
-        Queue: mockQueue,
-      }
-      mockWindow.MathJax.AuthorInit()
-      mockMathJaxStartupHooks.forEach((cb) => cb())
-      mockWindow.MathJax.isReady = true
+jest.mock('load-script', () => () => {
+  if (!mockSkipLoadScript) {
+    const scriptEl = mockDocument.createElement('script')
+    scriptEl.setAttribute('id', '__MATHJAX_SCRIPT__')
+    mockDocument.body.appendChild(scriptEl)
+    mockWindow.MathJax.Ajax = { config: { path: {} } }
+    mockWindow.MathJax.Hub = {
+      getAllJax: () => mockAllJax,
+      Register: { StartupHook: (_, cb) => mockMathJaxStartupHooks.push(cb) },
+      Queue: mockQueue,
     }
-  })
-)
+    mockWindow.MathJax.AuthorInit()
+    mockMathJaxStartupHooks.forEach((cb) => cb())
+    mockWindow.MathJax.isReady = true
+  }
+})
 
 let mathDelimiter
 let typesetStates
@@ -72,13 +70,15 @@ const MathJaxComponentScanElement = ({ texCode }) => {
     </div>
   )
 }
-MathJaxComponentScanElement.propTypes = { texCode: PropTypes.string.isRequired }
+MathJaxComponentScanElement.propTypes = {
+  texCode: PropTypes.string.isRequired,
+}
 
 describe('useMathJax', () => {
   beforeEach(() => {
     // reset local module state (mathJaxInjected)
     jest.isolateModules(() => {
-      ({
+      ;({
         default: useMathJax,
         mathDelimiter,
         typesetStates,
@@ -86,7 +86,9 @@ describe('useMathJax', () => {
       } = require('./useMathJax')) // eslint-disable-line global-require
     })
     const scriptEl = document.getElementById('__MATHJAX_SCRIPT__')
-    if (scriptEl) { scriptEl.remove() }
+    if (scriptEl) {
+      scriptEl.remove()
+    }
     process.browser = true
     mockQueue = jest.fn((arr) => mockQueueImpl(arr, { mock: 'jaxObject' }))
     mockAllJax = []
@@ -97,13 +99,17 @@ describe('useMathJax', () => {
   it('should render useMathJax and unmount', () => {
     const wrapper = mount(<MathJaxComponent texCode="f(x)=x^2" />)
     const mathJaxDiv = wrapper.find('div#mathJaxDiv')
-    expect(mathJaxDiv.text()).toBe(`${mathDelimiter.inline[0]}f(x)=x^2${mathDelimiter.inline[1]}`)
+    expect(mathJaxDiv.text()).toBe(
+      `${mathDelimiter.inline[0]}f(x)=x^2${mathDelimiter.inline[1]}`
+    )
     expect(mockQueue).toBeCalledTimes(1)
     const typesetArg = mockQueue.mock.calls[0][0]
     expect(typesetArg[0]).toBe('Typeset')
     expect(typesetArg[2]).toBe(mathJaxDiv.getDOMNode())
     expect(typesetArg[3]).toBeInstanceOf(Function)
-    expect(parseInt(wrapper.find('div#typesetState').text(), 10)).toBe(typesetStates.SUCCESS)
+    expect(parseInt(wrapper.find('div#typesetState').text(), 10)).toBe(
+      typesetStates.SUCCESS
+    )
     wrapper.unmount()
     expect(mockQueue).toBeCalledTimes(2)
     const removeArg = mockQueue.mock.calls[1][0]
@@ -116,10 +122,14 @@ describe('useMathJax', () => {
   it('should render useMathJaxScanElement', () => {
     const wrapper = mount(<MathJaxComponentScanElement texCode="f(x)=x^2" />)
     const mathJaxDiv = wrapper.find('div#mathJaxDiv')
-    expect(mathJaxDiv.text()).toBe(`${mathDelimiter.inline[0]}f(x)=x^2${mathDelimiter.inline[1]}`)
+    expect(mathJaxDiv.text()).toBe(
+      `${mathDelimiter.inline[0]}f(x)=x^2${mathDelimiter.inline[1]}`
+    )
     expect(mockQueue).toBeCalledTimes(1)
     expect(mockAllJax).toHaveLength(1)
-    expect(parseInt(wrapper.find('div#typesetState').text(), 10)).toBe(typesetStates.SUCCESS)
+    expect(parseInt(wrapper.find('div#typesetState').text(), 10)).toBe(
+      typesetStates.SUCCESS
+    )
     wrapper.unmount()
     expect(mockAllJax).toHaveLength(0)
     expect(mockQueue).toBeCalledTimes(2)
@@ -130,19 +140,25 @@ describe('useMathJax', () => {
     expect(document.getElementById('__MATHJAX_SCRIPT__')).toBe(null)
     const wrapper = mount(<MathJaxComponent texCode="f(x)=x^" />)
     const mathJaxDiv = wrapper.find('div#mathJaxDiv')
-    expect(mathJaxDiv.text()).toBe(`${mathDelimiter.inline[0]}f(x)=x^${mathDelimiter.inline[1]}`)
+    expect(mathJaxDiv.text()).toBe(
+      `${mathDelimiter.inline[0]}f(x)=x^${mathDelimiter.inline[1]}`
+    )
     expect(mockQueue).toBeCalledTimes(1)
     const typesetArg = mockQueue.mock.calls[0][0]
     expect(typesetArg[0]).toBe('Typeset')
     expect(typesetArg[2]).toBe(mathJaxDiv.getDOMNode())
     expect(typesetArg[3]).toBeInstanceOf(Function)
-    expect(parseInt(wrapper.find('div#typesetState').text(), 10)).toBe(typesetStates.ERROR)
+    expect(parseInt(wrapper.find('div#typesetState').text(), 10)).toBe(
+      typesetStates.ERROR
+    )
   })
 
   it('should inject MathJax client-side', () => {
     expect(document.getElementById('__MATHJAX_SCRIPT__')).toBe(null)
     mount(<MathJaxComponent texCode="f(x)=x^2" />)
-    expect(document.getElementById('__MATHJAX_SCRIPT__')).toBeInstanceOf(HTMLScriptElement)
+    expect(document.getElementById('__MATHJAX_SCRIPT__')).toBeInstanceOf(
+      HTMLScriptElement
+    )
   })
 
   it('should not inject MathJax server-side', () => {
