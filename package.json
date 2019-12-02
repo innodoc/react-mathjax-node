@@ -1,0 +1,52 @@
+{
+  "name": "use-mathjax",
+  "version": "0.0.1",
+  "description": "React hook for integrating MathJax v3",
+  "source": "src/index.js",
+  "main": "dist/use-mathjax.js",
+  "umd:main": "dist/use-mathjax.umd.js",
+  "module": "dist/use-mathjax.mjs",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/innodoc/use-mathjax.git"
+  },
+  "bugs": {
+    "url": "https://github.com/innodoc/use-mathjax/issues"
+  },
+  "author": "Mirko Dietrich <dietrich@math.tu-berlin.de>",
+  "license": "MIT",
+  "keywords": [
+    "react",
+    "react-hooks",
+    "mathjax"
+  ],
+  "scripts": {
+    "build": "rollup -c",
+    "lint": "eslint .",
+    "test": "jest"
+  },
+  "private": false,
+  "devDependencies": {
+    "@babel/core": "^7.7.4",
+    "@babel/plugin-syntax-dynamic-import": "^7.7.4",
+    "@babel/preset-env": "^7.7.4",
+    "@babel/preset-react": "^7.7.4",
+    "babel-eslint": "^10.0.3",
+    "babel-jest": "^24.9.0",
+    "eslint": "^6.7.1",
+    "eslint-config-airbnb": "^18.0.1",
+    "eslint-plugin-import": "^2.18.2",
+    "eslint-plugin-jest": "^23.0.5",
+    "eslint-plugin-jsx-a11y": "^6.2.3",
+    "eslint-plugin-react": "^7.16.0",
+    "jest": "^24.9.0",
+    "mathjax-full": "^3.0.0",
+    "prop-types": "^15.7.2",
+    "react": "^16.12.0",
+    "rollup": "^1.27.5",
+    "rollup-plugin-babel": "^4.3.3"
+  },
+  "peerDependencies": {
+    "react": "^16.12.0"
+  }
+}
