@@ -1,12 +1,12 @@
 import React, { useContext } from 'react'
-
 import ReactDOM from 'react-dom'
+
 import {
   MathJaxDiv,
   MathJaxSpan,
   MathJaxContext,
   MathJaxProvider,
-} from 'react-mathjax-node'
+} from '../src'
 
 const MathJaxPane = () => {
   const { typesetDone } = useContext(MathJaxContext)

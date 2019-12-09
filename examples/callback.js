@@ -1,6 +1,6 @@
 import React from 'react'
 import ReactDOM from 'react-dom'
-import { MathJaxDiv, MathJaxSpan, MathJaxProvider } from 'react-mathjax-node'
+import { MathJaxDiv, MathJaxSpan, MathJaxProvider } from '../src'
 
 const Root = () => (
   <MathJaxProvider>
