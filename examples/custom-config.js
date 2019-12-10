@@ -5,7 +5,7 @@ import {
   MathJaxSpan,
   MathJaxProvider,
   MathJaxConfigProvider,
-} from '../src'
+} from '..'
 
 const mathJaxOptions = {
   startup: {

@@ -1,14 +1,9 @@
 import React, { useContext } from 'react'
 import ReactDOM from 'react-dom'
 
-import {
-  MathJaxDiv,
-  MathJaxSpan,
-  MathJaxContext,
-  MathJaxProvider,
-} from '../src'
+import { MathJaxDiv, MathJaxSpan, MathJaxContext, MathJaxProvider } from '..'
 
-const MathJaxPane = () => {
+const MathJaxFadeInExample = () => {
   const { typesetDone } = useContext(MathJaxContext)
   const style = {
     opacity: typesetDone ? 1 : 0,
@@ -27,7 +22,8 @@ const MathJaxPane = () => {
 
 const Root = () => (
   <MathJaxProvider>
-    <MathJaxPane />
+    <p>Prevent flash of non-typeset formulars.</p>
+    <MathJaxFadeInExample />
   </MathJaxProvider>
 )
 

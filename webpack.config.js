@@ -5,15 +5,20 @@ const path = require('path')
 const HtmlWebpackPlugin = require('html-webpack-plugin')
 const { CleanWebpackPlugin } = require('clean-webpack-plugin')
 
-const getEntryName = (entry) => path.basename(entry, '.js')
+const pkg = require('./package.json')
+
 const examplesPath = path.resolve(__dirname, 'examples')
 const distPath = path.resolve(examplesPath, 'dist')
 const examples = glob.sync(path.resolve(examplesPath, '*.js'))
+const exampleNames = examples.reduce((acc, e) => {
+  acc[e] = path.basename(e, '.js')
+  return acc
+}, {})
 
 module.exports = {
   mode: 'production',
   entry: examples.reduce((acc, examplePath) => {
-    acc[getEntryName(examplePath)] = examplePath
+    acc[exampleNames[examplePath]] = examplePath
     return acc
   }, {}),
   output: {
@@ -40,21 +45,24 @@ module.exports = {
       filename: path.resolve(distPath, 'index.html'),
       template: path.resolve(examplesPath, 'index.ejs'),
       templateParameters: {
-        examples: examples.map((example) => getEntryName(example)),
-        title: 'react-mathjax-node - Examples',
+        examples: examples.map((example) => exampleNames[example]),
+        repoUrl: pkg.repository.url,
+        title: `${pkg.name} - Examples`,
       },
     }),
-    ...examples.map((e) => {
-      const entryName = getEntryName(e)
-      return new HtmlWebpackPlugin({
-        chunks: [entryName, 'react', 'mathjax'],
-        filename: path.resolve(distPath, entryName, 'index.html'),
-        template: path.resolve(examplesPath, 'example.ejs'),
-        templateParameters: {
-          title: `react-mathjax-node - ${entryName} example`,
-        },
-      })
-    }),
+    ...examples.map(
+      (e) =>
+        new HtmlWebpackPlugin({
+          chunks: [exampleNames[e], 'react', 'mathjax'],
+          filename: path.resolve(distPath, exampleNames[e], 'index.html'),
+          template: path.resolve(examplesPath, 'example.ejs'),
+          templateParameters: {
+            exampleName: exampleNames[e],
+            repoUrl: pkg.repository.url,
+            title: `${pkg.name} - ${exampleNames[e]} example`,
+          },
+        })
+    ),
   ],
   resolve: {
     extensions: ['*', '.js'],
