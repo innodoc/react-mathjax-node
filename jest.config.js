@@ -1,11 +1,6 @@
 module.exports = {
-  testEnvironment: 'enzyme',
-  roots: ['src'],
+  coverageDirectory: 'coverage',
   collectCoverageFrom: ['src/**/*.js'],
-  setupFilesAfterEnv: ['<rootDir>/enzyme.config.js'],
-  testPathIgnorePatterns: ['<rootDir>/node_modules/'],
-  transform: {
-    '^.+\\.js$': 'babel-jest',
-  },
-  verbose: true,
+  setupFilesAfterEnv: ['<rootDir>/setupTests.js'],
+  transformIgnorePatterns: ['/node_modules/(?!mathjax-full).+\\.js$'],
 }
