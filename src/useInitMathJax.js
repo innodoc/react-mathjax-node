@@ -1,12 +1,17 @@
+/* eslint-disable global-require */
+
+import { useContext } from 'react'
 import { insert } from 'mathjax-full/js/util/Options'
+
+import MathJaxConfigContext from './MathJaxConfigContext'
+
+const DEFAULT_FONT_URL =
+  'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2'
 
 // if MathJax import has been triggered
 let mathJaxImported = false
 // if MathJax is ready
 let mathJaxReady = false
-
-const DEFAULT_FONT_URL =
-  'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2'
 
 const pageReadyCallbacks = []
 
@@ -28,11 +33,19 @@ const defaultOptions = {
   },
 }
 
-// TODO: create (optional) MathJaxOptionsContext (only one options for all MathJaxContexts!)
+const importMathJax = () => {
+  require('mathjax-full/components/src/startup/lib/startup.js')
+  const { Loader } = require('mathjax-full/js/components/loader.js')
+  Loader.preLoad('loader', 'startup', 'core', 'input/tex-full', 'output/chtml')
+  require('mathjax-full/components/src/core/core.js')
+  require('mathjax-full/components/src/input/tex-full/tex-full.js')
+  require('mathjax-full/components/src/output/chtml/chtml.js')
+  require('mathjax-full/components/src/startup/startup.js')
+}
 
-const useInitMathJax = (options) => {
-  if (process.browser) {
-    const customOptions = options
+const useInitMathJax = () => {
+  const options = useContext(MathJaxConfigContext)
+  if (typeof window !== 'undefined') {
     return new Promise((resolve) => {
       if (mathJaxImported) {
         if (mathJaxReady) {
@@ -44,9 +57,9 @@ const useInitMathJax = (options) => {
         mathJaxImported = true
         // support a custom pageReady function
         let readyCallback
-        if (customOptions.startup && customOptions.startup.pageReady) {
-          const customReadyCallback = customOptions.startup.pageReady
-          delete customOptions.startup.pageReady
+        if (options.startup && options.startup.pageReady) {
+          const customReadyCallback = options.startup.pageReady
+          delete options.startup.pageReady
           readyCallback = () => {
             resolve()
             customReadyCallback()
@@ -55,12 +68,9 @@ const useInitMathJax = (options) => {
           readyCallback = resolve
         }
         // MathJax reads options from window.MathJax
-        window.MathJax = insert(defaultOptions, customOptions)
+        window.MathJax = insert(defaultOptions, options)
         pageReadyCallbacks.push(readyCallback)
-        import(
-          /* webpackChunkName: "mathjax" */
-          './mathjax-bundle'
-        )
+        importMathJax()
       }
     })
   }

@@ -1,13 +1,6 @@
-import React, {
-  useCallback,
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-} from 'react'
+import React, { useCallback, useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 
-import MathJaxConfigContext from './MathJaxConfigContext'
 import MathJaxContext from './MathJaxContext'
 import useInitMathJax from './useInitMathJax'
 
@@ -31,7 +24,6 @@ const typesettingDone = (setTypesetStatus, typesetCallbacks) => {
 }
 
 const MathJaxProvider = ({ children }) => {
-  const options = useContext(MathJaxConfigContext)
   // Using a chain of promises to orchestrate the flow of events.
   const promiseMakers = useRef([])
   // MathJax typesetting state. Can be used to show contents after typeset is done.
@@ -46,11 +38,11 @@ const MathJaxProvider = ({ children }) => {
   )
 
   // Load MathJax
-  const initPromise = useInitMathJax(options)
+  const initPromise = useInitMathJax()
 
   // Typeset formulars sequentially.
   useEffect(() => {
-    if (process.browser) {
+    if (typeof window !== 'undefined') {
       promiseMakers.current
         .reduce((chain, makePromise) => chain.then(makePromise), initPromise)
         .then(() => typesettingDone(setTypesetDone, typesetCallbacks))

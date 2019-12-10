@@ -10,7 +10,7 @@ const useMathJax = (texCode, mathType = 'inline') => {
   useEffect(() => {
     const display = mathType === 'display'
     const elem = mathJaxElem.current
-    if (process.browser) {
+    if (typeof window !== 'undefined') {
       promiseMakers.current.push(() => {
         return window.MathJax.tex2chtmlPromise(texCode, {
           ...window.MathJax.getMetricsFor(elem, display),
@@ -19,6 +19,7 @@ const useMathJax = (texCode, mathType = 'inline') => {
           // add rendered nodes
           if (mathJaxNodes) {
             elem.innerHTML = mathJaxNodes.outerHTML
+            console.log(elem.innerHTML)
           }
         })
       })
