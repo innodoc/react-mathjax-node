@@ -14,13 +14,21 @@ the hairy details of integrating MathJax with React.
 - Supports multiple MathJax-enabled areas that may be controlled independently.
 - MathJax is rendered client-side (no SSR).
 
+## Installation
+
+```sh
+$ npm install react-mathjax-node # or
+$ yarn add react-mathjax-node
+```
+
 ## Usage
 
 ```JSX
 
 ```
 
+## API
+
 ## License
 
 MIT
-ss
