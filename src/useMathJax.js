@@ -19,7 +19,6 @@ const useMathJax = (texCode, mathType = 'inline') => {
           // add rendered nodes
           if (mathJaxNodes) {
             elem.innerHTML = mathJaxNodes.outerHTML
-            console.log(elem.innerHTML)
           }
         })
       })
