@@ -22,7 +22,7 @@ const MathJaxNode = ({
   displayType,
   texCode,
 }) => {
-  const mathJaxElem = useMathJax(texCode || '', displayType)
+  const mathJaxElem = useMathJax(texCode, displayType)
   const { typesetDone } = useContext(Context)
   let className
   if (classNameHide && classNameShow) {
