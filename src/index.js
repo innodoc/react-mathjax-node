@@ -1,6 +1,16 @@
-export { default as useMathJax } from './useMathJax'
-export { default as MathJaxContext } from './MathJaxContext'
-export { default as MathJaxProvider } from './MathJaxProvider'
-export { default as MathJaxConfigContext } from './MathJaxConfigContext'
-export { default as MathJaxConfigProvider } from './MathJaxConfigProvider'
-export { MathJaxDiv, MathJaxSpan } from './nodes'
+import ConfigContext from './ConfigContext'
+import ConfigProvider from './ConfigProvider'
+import Context from './Context'
+import { Div, Span } from './nodes'
+import Provider from './Provider'
+import useMathJax from './useMathJax'
+
+export default {
+  ConfigContext,
+  ConfigProvider,
+  Context,
+  Div,
+  Provider,
+  Span,
+  useMathJax,
+}

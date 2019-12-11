@@ -1,7 +1,7 @@
 import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 
-import MathJaxContext from './MathJaxContext'
+import Context from './Context'
 import useMathJax from './useMathJax'
 
 const nodePropTypes = {
@@ -23,7 +23,7 @@ const MathJaxNode = ({
   texCode,
 }) => {
   const mathJaxElem = useMathJax(texCode || '', displayType)
-  const { typesetDone } = useContext(MathJaxContext)
+  const { typesetDone } = useContext(Context)
   let className
   if (classNameHide && classNameShow) {
     className = typesetDone ? classNameShow : classNameHide
@@ -42,7 +42,7 @@ MathJaxNode.defaultProps = {
   ...nodeDefaultProps,
 }
 
-const MathJaxDiv = ({ classNameHide, classNameShow, texCode }) => (
+const Div = ({ classNameHide, classNameShow, texCode }) => (
   <MathJaxNode
     classNameHide={classNameHide}
     classNameShow={classNameShow}
@@ -51,10 +51,10 @@ const MathJaxDiv = ({ classNameHide, classNameShow, texCode }) => (
   />
 )
 
-MathJaxDiv.propTypes = nodePropTypes
-MathJaxDiv.defaultProps = nodeDefaultProps
+Div.propTypes = nodePropTypes
+Div.defaultProps = nodeDefaultProps
 
-const MathJaxSpan = ({ classNameHide, classNameShow, texCode }) => (
+const Span = ({ classNameHide, classNameShow, texCode }) => (
   <MathJaxNode
     classNameHide={classNameHide}
     classNameShow={classNameShow}
@@ -63,7 +63,7 @@ const MathJaxSpan = ({ classNameHide, classNameShow, texCode }) => (
   />
 )
 
-MathJaxSpan.propTypes = nodePropTypes
-MathJaxSpan.defaultProps = nodeDefaultProps
+Span.propTypes = nodePropTypes
+Span.defaultProps = nodeDefaultProps
 
-export { MathJaxDiv, MathJaxSpan }
+export { Div, Span }

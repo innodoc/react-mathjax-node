@@ -1,11 +1,11 @@
 import React, { useContext } from 'react'
 import { shallow } from 'enzyme'
 
-import MathJaxContext from '../src/MathJaxContext'
+import Context from '../src/Context'
 
-describe('MathJaxContext', () => {
+describe('Context', () => {
   it('should provide no defaults', () => {
-    const MyComponent = () => <div context={useContext(MathJaxContext)} />
+    const MyComponent = () => <div context={useContext(Context)} />
     const div = shallow(<MyComponent />).find('div')
     expect(div.prop('context')).toBeUndefined()
   })

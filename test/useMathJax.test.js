@@ -1,10 +1,10 @@
 import React, { useEffect, useContext } from 'react'
 import { mount } from 'enzyme'
 
-import { MathJaxProvider, MathJaxContext, useMathJax } from '..'
+import { Provider, Context, useMathJax } from '..'
 
 const MathJaxComponent = ({ callback, mathType, texCode }) => {
-  const { addCallback, removeCallback } = useContext(MathJaxContext)
+  const { addCallback, removeCallback } = useContext(Context)
   useEffect(() => {
     addCallback(callback)
     return () => removeCallback(callback)
@@ -22,13 +22,13 @@ describe('useMathJax', () => {
       done()
     }
     wrapper = mount(
-      <MathJaxProvider>
+      <Provider>
         <MathJaxComponent
           callback={callback}
           mathType="inline"
           texCode={texCode}
         />
-      </MathJaxProvider>
+      </Provider>
     )
   })
 })

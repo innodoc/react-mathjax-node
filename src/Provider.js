@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
 
-import MathJaxContext from './MathJaxContext'
+import Context from './Context'
 import useInitMathJax from './useInitMathJax'
 
 const typesettingDone = (setTypesetStatus, typesetCallbacks) => {
@@ -23,7 +23,7 @@ const typesettingDone = (setTypesetStatus, typesetCallbacks) => {
   }
 }
 
-const MathJaxProvider = ({ children }) => {
+const Provider = ({ children }) => {
   // Using a chain of promises to orchestrate the flow of events.
   const promiseMakers = useRef([])
   // MathJax typesetting state. Can be used to show contents after typeset is done.
@@ -58,13 +58,11 @@ const MathJaxProvider = ({ children }) => {
     promiseMakers,
   }
 
-  return (
-    <MathJaxContext.Provider value={value}>{children}</MathJaxContext.Provider>
-  )
+  return <Context.Provider value={value}>{children}</Context.Provider>
 }
 
-MathJaxProvider.propTypes = {
+Provider.propTypes = {
   children: PropTypes.node.isRequired,
 }
 
-export default MathJaxProvider
+export default Provider

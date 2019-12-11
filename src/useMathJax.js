@@ -1,10 +1,10 @@
 import { useContext, useEffect, useRef } from 'react'
 
-import MathJaxContext from './MathJaxContext'
+import Context from './Context'
 
 const useMathJax = (texCode, mathType = 'inline') => {
   const mathJaxElem = useRef(null)
-  const { promiseMakers } = useContext(MathJaxContext)
+  const { promiseMakers } = useContext(Context)
 
   // Add typesetting Promise
   useEffect(() => {

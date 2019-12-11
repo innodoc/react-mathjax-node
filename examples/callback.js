@@ -1,9 +1,10 @@
 import React, { useContext, useEffect } from 'react'
 import ReactDOM from 'react-dom'
-import { MathJaxContext, MathJaxDiv, MathJaxSpan, MathJaxProvider } from '..'
 
-const MathJaxCallbackExample = () => {
-  const { addCallback, removeCallback } = useContext(MathJaxContext)
+import MathJax from '..'
+
+const CallbackExample = () => {
+  const { addCallback, removeCallback } = useContext(MathJax.Context)
   useEffect(() => {
     const callback = () => {
       console.log('Typesetting is done.')
@@ -17,18 +18,18 @@ const MathJaxCallbackExample = () => {
     <>
       <p>Add callbacks that run after typesetting is done.</p>
       <p>
-        Here is some inline math: <MathJaxSpan texCode="f(x)=x^2" />
+        Here is some inline math: <MathJax.Span texCode="f(x)=x^2" />
       </p>
       <p>This one is a block element:</p>
-      <MathJaxDiv texCode="f(x)=x^2" />
+      <MathJax.Div texCode="f(x)=x^2" />
     </>
   )
 }
 
 const Root = () => (
-  <MathJaxProvider>
-    <MathJaxCallbackExample />
-  </MathJaxProvider>
+  <MathJax.Provider>
+    <CallbackExample />
+  </MathJax.Provider>
 )
 
 ReactDOM.render(<Root />, document.getElementById('root'))

@@ -3,7 +3,7 @@
 import { useContext } from 'react'
 import { insert } from 'mathjax-full/js/util/Options'
 
-import MathJaxConfigContext from './MathJaxConfigContext'
+import ConfigContext from './ConfigContext'
 
 const DEFAULT_FONT_URL =
   'https://cdn.jsdelivr.net/npm/mathjax@3/es5/output/chtml/fonts/woff-v2'
@@ -44,7 +44,7 @@ const importMathJax = () => {
 }
 
 const useInitMathJax = () => {
-  const options = useContext(MathJaxConfigContext)
+  const options = useContext(ConfigContext)
   if (typeof window !== 'undefined') {
     return new Promise((resolve) => {
       if (mathJaxImported) {
