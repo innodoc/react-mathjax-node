@@ -4,9 +4,9 @@ import { shallow } from 'enzyme'
 import Context from '../src/Context'
 
 describe('Context', () => {
-  it('should provide no defaults', () => {
-    const MyComponent = () => <div context={useContext(Context)} />
-    const div = shallow(<MyComponent />).find('div')
+  it('should provide undefined as default', () => {
+    const Component = () => <div context={useContext(Context)} />
+    const div = shallow(<Component />).find('div')
     expect(div.prop('context')).toBeUndefined()
   })
 })
