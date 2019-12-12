@@ -66,4 +66,4 @@ const Span = ({ classNameHide, classNameShow, texCode }) => (
 Span.propTypes = nodePropTypes
 Span.defaultProps = nodeDefaultProps
 
-export { Div, Span }
+export { Div, MathJaxNode, Span }
