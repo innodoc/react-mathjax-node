@@ -5,7 +5,6 @@ import useMathJax from '../src/useMathJax'
 
 let mockPromiseMakers
 let mockRef
-let mockProcessPromises
 let mockUseEffectFunc
 jest.mock('react', () => {
   const ActualReact = jest.requireActual('react')
@@ -35,9 +34,7 @@ const texCode = 'f(x)=x^2'
 describe('useMathJax', () => {
   it.each(['inline', 'display'])(
     'should call MathJax and manage nodes (%s)',
-    (mathType, done) => {
-      let cleanupFunc
-
+    async (mathType) => {
       window.MathJax = {
         tex2chtmlPromise: (_texCode, options) => {
           expect(_texCode).toBe(texCode)
@@ -58,29 +55,25 @@ describe('useMathJax', () => {
         },
       }
 
-      mockProcessPromises = () => {
-        expect(mockPromiseMakers.current).toHaveLength(1)
-        mockPromiseMakers.current[0]().then(() => {
-          // check mathJaxNodes were appended
-          expect(mockRef.current.children).toHaveLength(1)
-          expect(mockRef.current.children[0].id).toBe('mockid')
-          // check removal of mathJaxNodes on cleanup
-          cleanupFunc()
-          expect(mockRef.current.children).toHaveLength(0)
-          done()
-        })
-      }
-
       const wrapper = mount(
         <MathJaxComponent mathType={mathType} texCode={texCode} />
       )
 
       // Call useEffect *after* Component is mounted, so ref is set
-      cleanupFunc = mockUseEffectFunc()
-      mockProcessPromises()
+      const cleanupFunc = mockUseEffectFunc()
 
+      expect(mockPromiseMakers.current).toHaveLength(1)
+      await mockPromiseMakers.current[0]().then(() => {
+        // check mathJaxNodes were appended
+        expect(mockRef.current.children).toHaveLength(1)
+        expect(mockRef.current.children[0].id).toBe('mockid')
+      })
+      // check ref is passed to children
       const div = wrapper.childAt(0)
       expect(div.instance()).toBe(mockRef.current)
+      // check removal of mathJaxNodes on cleanup
+      cleanupFunc()
+      expect(mockRef.current.children).toHaveLength(0)
     }
   )
 })
