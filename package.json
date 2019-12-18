@@ -38,7 +38,7 @@
     "coverage": "jest --coverage --silent",
     "format": "prettier --write \"*.js\" \"{src,test}/**/*.js\"",
     "lint": "eslint .",
-    "test": "jest"
+    "test": "jest --verbose"
   },
   "dependencies": {
     "mathjax-full": "^3.0.0",
