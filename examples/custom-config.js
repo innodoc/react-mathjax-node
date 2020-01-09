@@ -5,7 +5,7 @@ import MathJax from '..'
 const mathJaxOptions = {
   startup: {
     pageReady() {
-      console.log('Custom pageReady!')
+      alert('Custom pageReady!')
     },
   },
   chtml: {

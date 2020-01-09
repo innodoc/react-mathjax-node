@@ -7,7 +7,7 @@ const CallbackExample = () => {
   const { addCallback, removeCallback } = useContext(MathJax.Context)
   useEffect(() => {
     const callback = () => {
-      console.log('Typesetting is done.')
+      alert('Typesetting is done.')
     }
     addCallback(callback)
     return () => {
