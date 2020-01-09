@@ -42,7 +42,8 @@
   },
   "dependencies": {
     "mathjax-full": "^3.0.0",
-    "prop-types": "^15.7.2"
+    "prop-types": "^15.7.2",
+    "use-debounce": "^3.3.0"
   },
   "devDependencies": {
     "@babel/cli": "^7.7.5",

@@ -1,5 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react'
 import PropTypes from 'prop-types'
+import { useDebouncedCallback } from 'use-debounce'
 
 import Context from './Context'
 import useInitMathJax from './useInitMathJax'
@@ -35,21 +36,33 @@ const Provider = ({ children }) => {
   // Load MathJax
   const initPromise = useInitMathJax()
 
-  // Typeset formulars sequentially.
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
+  // Typeset when no new formulars were encountered.
+  const [triggerProcessing] = useDebouncedCallback(() => {
+    const runCallbacks = () => {
+      while (typesetCallbacks.current.length > 0) {
+        typesetCallbacks.current.pop()()
+      }
+    }
+
+    if (promiseMakers.current.length > 0) {
       promiseMakers.current
         .reduce((chain, makePromise) => chain.then(makePromise), initPromise)
         .then(() => {
+          promiseMakers.current = []
           updateCss()
           setTypesetDone(true)
-          // Run callbacks.
-          while (typesetCallbacks.current.length > 0) {
-            typesetCallbacks.current.pop()()
-          }
+          runCallbacks()
         })
+    } else {
+      setTypesetDone(true)
+      runCallbacks()
     }
-  }, [initPromise, setTypesetDone, typesetCallbacks])
+  }, 100)
+
+  useEffect(() => {
+    // Trigger typesetting in case no formulars were rendered.
+    triggerProcessing()
+  })
 
   const value = {
     addCallback,
@@ -57,6 +70,7 @@ const Provider = ({ children }) => {
     setTypesetDone,
     typesetDone,
     promiseMakers,
+    triggerProcessing,
   }
 
   return <Context.Provider value={value}>{children}</Context.Provider>

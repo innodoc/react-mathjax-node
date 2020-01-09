@@ -4,7 +4,9 @@ import Context from './Context'
 
 const useMathJax = (texCode, mathType = 'inline') => {
   const mathJaxElem = useRef(null)
-  const { promiseMakers } = useContext(Context)
+  const { promiseMakers, setTypesetDone, triggerProcessing } = useContext(
+    Context
+  )
 
   // Add typesetting Promise
   useEffect(() => {
@@ -22,13 +24,23 @@ const useMathJax = (texCode, mathType = 'inline') => {
           }
         })
       })
+      // Trigger chain promise chain
+      setTypesetDone(false)
+      triggerProcessing()
     }
     return () => {
       if (elem) {
         elem.innerHTML = ''
       }
     }
-  }, [mathJaxElem, mathType, promiseMakers, texCode])
+  }, [
+    mathJaxElem,
+    mathType,
+    promiseMakers,
+    setTypesetDone,
+    texCode,
+    triggerProcessing,
+  ])
   return mathJaxElem
 }
 

@@ -4,6 +4,8 @@ import { mount } from 'enzyme'
 import useMathJax from '../src/useMathJax'
 
 let mockPromiseMakers
+const mockSetTypesetDone = jest.fn()
+const mockTriggerProcessing = jest.fn()
 let mockRef
 let mockUseEffectFunc
 jest.mock('react', () => {
@@ -12,7 +14,11 @@ jest.mock('react', () => {
     ...ActualReact,
     useContext: () => {
       mockPromiseMakers = ActualReact.useRef([])
-      return { promiseMakers: mockPromiseMakers }
+      return {
+        promiseMakers: mockPromiseMakers,
+        setTypesetDone: mockSetTypesetDone,
+        triggerProcessing: mockTriggerProcessing,
+      }
     },
     useEffect: (func) => {
       mockUseEffectFunc = func
@@ -35,6 +41,9 @@ describe('useMathJax', () => {
   it.each(['inline', 'display'])(
     'should call MathJax and manage nodes (%s)',
     async (mathType) => {
+      mockSetTypesetDone.mockClear()
+      mockTriggerProcessing.mockClear()
+
       window.MathJax = {
         tex2chtmlPromise: (_texCode, options) => {
           expect(_texCode).toBe(texCode)
@@ -68,6 +77,10 @@ describe('useMathJax', () => {
         expect(mockRef.current.children).toHaveLength(1)
         expect(mockRef.current.children[0].id).toBe('mockid')
       })
+      expect(mockSetTypesetDone).toBeCalledTimes(1)
+      expect(mockSetTypesetDone).toBeCalledWith(false)
+      expect(mockTriggerProcessing).toBeCalledTimes(1)
+
       // check ref is passed to children
       const div = wrapper.childAt(0)
       expect(div.instance()).toBe(mockRef.current)

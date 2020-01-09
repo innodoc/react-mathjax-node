@@ -12,7 +12,7 @@ jest.mock('../src/useInitMathJax', () => () => mockUseInitMathJax)
 // https://github.com/airbnb/enzyme/issues/2073#issuecomment-565736674
 const waitForComponent = async (wrapper) => {
   await act(async () => {
-    await new Promise((r) => setTimeout(r, 0))
+    await new Promise((r) => setTimeout(r, 150)) // give time to debounced callback
     wrapper.update()
   })
 }
@@ -86,7 +86,7 @@ describe('Provider', () => {
   })
 
   it('should update stylesheets', async () => {
-    let wrapper = mount(
+    const wrapper = mount(
       <Provider>
         <Component />
       </Provider>
@@ -94,13 +94,5 @@ describe('Provider', () => {
     await waitForComponent(wrapper)
     expect(mockChtmlStylesheet).toBeCalledTimes(1)
     expect(document.getElementById('MOCK-CSS')).toBeTruthy()
-    // run another time to trigger stylesheet update
-    wrapper = mount(
-      <Provider>
-        <Component />
-      </Provider>
-    )
-    await waitForComponent(wrapper)
-    expect(mockChtmlStylesheet).toBeCalledTimes(2)
   })
 })
