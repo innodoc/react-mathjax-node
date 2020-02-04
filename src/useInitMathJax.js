@@ -68,7 +68,7 @@ const useInitMathJax = () => {
           readyCallback = resolve
         }
         // MathJax reads options from window.MathJax
-        window.MathJax = insert(defaultOptions, options)
+        window.MathJax = insert(defaultOptions, options, false)
         pageReadyCallbacks.push(readyCallback)
         importMathJax()
       }
