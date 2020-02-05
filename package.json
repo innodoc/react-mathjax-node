@@ -1,6 +1,6 @@
 {
   "name": "@innodoc/react-mathjax-node",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "React hook for integrating MathJax v3",
   "main": "cjs/",
   "module": "esm/",
