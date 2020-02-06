@@ -28,8 +28,8 @@ Check out the [examples](https://innodoc.github.io/react-mathjax-node/).
 ## Installation
 
 ```sh
-$ npm install react-mathjax-node # or
-$ yarn add react-mathjax-node
+$ npm install @innodoc/react-mathjax-node # or
+$ yarn add @innodoc/react-mathjax-node
 ```
 
 ## Usage
@@ -38,7 +38,7 @@ You need at least one `MathJax.Provider` and one `MathJax.Div` or
 `MathJax.Span`.
 
 ```js
-import MathJax from 'react-mathjax-node'
+import MathJax from '@innodoc/react-mathjax-node'
 
 <MathJax.Provider>
   <p>
