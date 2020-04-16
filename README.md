@@ -34,15 +34,14 @@ $ yarn add @innodoc/react-mathjax-node
 
 ## Usage
 
-You need at least one `MathJax.Provider` and one `MathJax.Div` or
-`MathJax.Span`.
+You need at least one `MathJax.Provider` and a `MathJax.MathJaxNode`.
 
 ```js
 import MathJax from '@innodoc/react-mathjax-node'
 
 <MathJax.Provider>
   <p>
-    Example formular: <MathJax.Span texCode="f(x)=x^2" />
+    Example formular: <MathJax.MathJaxNode displayType="inline" texCode="f(x)=x^2" />
   </p>
 </MathJax.Provider>
 ```
@@ -54,28 +53,28 @@ ways of using react-mathjax-node.
 
 ### Components
 
-Both `MathJax.Div` and `MathJax.Span` have the same props.
+### `MathJax.MathJaxNode`
 
-| Prop            | Description                      | Type     | Default |
-| --------------- | -------------------------------- | -------- | ------- |
-| `classNameHide` | className while typesetting.     | `string` | `null`  |
-| `classNameShow` | className when done typesetting. | `string` | `null`  |
-| `texCode`       | TeX code to typeset.             | `string` | `''`    |
+The main component you will need most of the time.
 
-#### `MathJax.Div`
+```js
+<MathJax.MathJaxNode displayType="display" texCode="x^2" />
+```
 
-> Block element MathJax formular.
-
-#### `MathJax.Span`
-
-> Inline element MathJax formular.
+| Prop            | Description                           | Type     | Default        |
+| --------------- | ------------------------------------- | -------- | -------------- |
+| `classNameHide` | className while typesetting.          | `string` | `null`         |
+| `classNameShow` | className when done typesetting.      | `string` | `null`         |
+| `texCode`       | TeX code to typeset.                  | `string` | `''`           |
+| `displayType`   | `display` (block) or `inline` element | `string` | `'inline'`     |
 
 ### `MathJax.Context`
 
-> The MathJax context considers all formulars in the component sub-tree.
+> Access the MathJax rendering context.
 
 Every MathJax formular needs to have a `MathJax.Provider` somewhere up the
-component tree.
+component tree. Within this subtree you can access the context to have more
+control.
 
 ```js
 const { addCallback, removeCallback, typesetDone } = useContext(MathJax.Context)
@@ -92,7 +91,7 @@ const { addCallback, removeCallback, typesetDone } = useContext(MathJax.Context)
 > The Provider manages all formulars in its component sub-tree.
 
 There can be an arbitrary number of Providers in your application. So you can
-have different areas with formulars and distinct display logic.
+have different areas with formulars and distinct display logic if needed.
 
 ### `MathJax.ConfigProvider`
 
@@ -108,10 +107,10 @@ somewhere in the component sub-tree of your `ConfigProvider`. Typically the
 ```js
   <MathJax.ConfigProvider options={myCustomMathJaxOptions}>
     <MathJax.Provider>
-      <MathJax.Div texCode="..." />
+      <MathJax.MathJaxNode texCode="..." />
     </MathJax.Provider>
     <MathJax.Provider>
-      <MathJax.Div texCode="..." />
+      <MathJax.MathJaxNode texCode="..." />
     </MathJax.Provider>
   </MathJax.ConfigProvider>
 ```
@@ -127,8 +126,8 @@ on how to customize the font URL.
 
 > React hook that adds MathJax typesetting capabilities.
 
-Typically you should just use either `MathJax.Div` or `MathJax.Span` which use
-`useMathJax` under the hood.
+Typically you should just use `MathJaxNode` which uses `useMathJax` under the
+hood.
 
 ```js
 const MathJaxComponent = () => {
@@ -137,10 +136,10 @@ const MathJaxComponent = () => {
 }
 ```
 
-| Argument      | Description           | Type                  | Default  |
-| ------------- | ----------------------| --------------------- | -------- |
-| `texCode`     | TeX code to typeset.  | `string`              | `''`     |
-| `displayType` | Element display Type. | `inline` or `display` | `inline` |
+| Argument      | Description           | Type                  | Default    |
+| ------------- | ----------------------| --------------------- | ---------- |
+| `texCode`     | TeX code to typeset.  | `string`              | `''`       |
+| `displayType` | Element display Type. | `inline` or `display` | `'inline'` |
 
 ## License
 
