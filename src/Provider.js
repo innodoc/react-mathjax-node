@@ -37,7 +37,7 @@ const Provider = ({ children }) => {
   const initPromise = useInitMathJax()
 
   // Typeset when no new formulars were encountered.
-  const [triggerProcessing] = useDebouncedCallback(() => {
+  const { callback: triggerProcessing } = useDebouncedCallback(() => {
     const runCallbacks = () => {
       while (typesetCallbacks.current.length > 0) {
         typesetCallbacks.current.pop()()
